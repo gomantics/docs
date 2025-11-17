@@ -39,10 +39,10 @@ const libraryPatterns: Array<{
 
 export default function Home() {
   return (
-    <div className="h-screen relative bg-white dark:bg-zinc-950 flex flex-col items-center justify-center">
+    <div className="min-h-svh relative bg-white dark:bg-zinc-950 flex flex-col items-center justify-center">
       <BackgroundBeams className="absolute inset-0" />
 
-      <main className="flex z-10 flex-1 flex-col items-center justify-center max-w-5xl mx-auto px-2">
+      <main className="flex z-10 flex-1 py-16 flex-col items-center justify-center max-w-5xl mx-auto px-2">
         {/* Logo Section - Centered */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -61,7 +61,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-sm text-zinc-600 text-center max-w-2xl dark:text-zinc-400"
+            className="text-sm text-zinc-600 text-center sm:max-w-2xl max-w-xs dark:text-zinc-400"
           >
             thoughtfully crafted Go libraries that make your code smarter, your
             workflow smoother, and your development more delightful
