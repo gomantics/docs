@@ -104,6 +104,20 @@ export default function Home() {
             >
               GitHub
             </a>
+            {process.env.NEXT_PUBLIC_GIT_SHA && (
+              <>
+                {" "}
+                &sdot;{" "}
+                <a
+                  href={`https://github.com/gomantics/docs/tree/${process.env.NEXT_PUBLIC_GIT_SHA}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-xs underline underline-offset-3 hover:text-zinc-900 transition-colors dark:hover:text-zinc-100"
+                >
+                  {process.env.NEXT_PUBLIC_GIT_SHA}
+                </a>
+              </>
+            )}
           </p>
         </div>
       </main>
