@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { gomanticsLibraries } from "@/lib/utils";
 import { LibraryCard } from "@/components/library-card";
 import { GomanticsLogo } from "@/components/logo/gomantics";
@@ -44,59 +43,30 @@ export default function Home() {
 
       <main className="flex z-10 flex-1 py-16 flex-col items-center justify-center max-w-5xl mx-auto px-2">
         {/* Logo Section - Centered */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="flex flex-col items-center mb-16 space-y-4"
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          >
+        <div className="flex flex-col items-center mb-16 space-y-4">
+          <div>
             <GomanticsLogo className="h-12" />
-          </motion.div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-sm text-zinc-600 text-center sm:max-w-2xl max-w-xs dark:text-zinc-400"
-          >
+          </div>
+          <p className="text-sm text-zinc-600 text-center sm:max-w-2xl max-w-xs dark:text-zinc-400">
             thoughtfully crafted Go libraries that make your code smarter, your
             workflow smoother, and your development more delightful
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
         {/* Libraries Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-        >
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {gomanticsLibraries.map((lib, index) => (
-            <motion.div
-              key={lib.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-            >
+            <div key={lib.name}>
               <LibraryCard
                 lib={lib}
                 pattern={libraryPatterns[index % libraryPatterns.length]}
               />
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.2 }}
-          className="mt-16 text-center dark:border-white/10"
-        >
+        <div className="mt-16 text-center dark:border-white/10">
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
             built by{" "}
             <a
@@ -126,7 +96,7 @@ export default function Home() {
               GitHub
             </a>
           </p>
-        </motion.div>
+        </div>
       </main>
     </div>
   );
