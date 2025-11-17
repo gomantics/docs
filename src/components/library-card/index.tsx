@@ -95,7 +95,7 @@ export function LibraryCard({ lib, pattern }: LibraryCardProps) {
   return (
     <div
       onMouseMove={onMouseMove}
-      className="group relative flex rounded-2xl bg-zinc-50 transition-shadow hover:shadow-md hover:shadow-zinc-900/5 dark:bg-white/2.5 dark:hover:shadow-black/5"
+      className="group relative flex rounded-2xl bg-zinc-50 transition-shadow hover:shadow-md hover:shadow-zinc-900/5 dark:bg-zinc-900 dark:hover:shadow-black/5"
     >
       <LibraryPattern {...pattern} mouseX={mouseX} mouseY={mouseY} />
       <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-zinc-900/7.5 group-hover:ring-emerald-600/20 dark:ring-white/10 dark:group-hover:ring-emerald-400/30" />

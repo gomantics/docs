@@ -4,6 +4,7 @@ import { gomanticsLibraries } from "@/lib/utils";
 import { LibraryCard } from "@/components/library-card";
 import { GomanticsLogo } from "@/components/logo/gomantics";
 import { BackgroundBeams } from "@/components/ui/shadcn-io/background-beams";
+import { ModeToggle } from "@/components/theme/mode-toggle";
 
 const libraryPatterns: Array<{
   y: number;
@@ -39,9 +40,14 @@ const libraryPatterns: Array<{
 export default function Home() {
   return (
     <div className="min-h-svh relative bg-white dark:bg-zinc-950 flex flex-col items-center justify-center">
-      <BackgroundBeams className="absolute inset-0" />
+      <BackgroundBeams className="absolute inset-0 z-0" />
 
-      <main className="flex z-10 flex-1 py-16 flex-col items-center justify-center max-w-5xl mx-auto px-2">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-20">
+        <ModeToggle />
+      </div>
+
+      <main className="relative flex z-10 flex-1 py-16 flex-col items-center justify-center max-w-5xl mx-auto px-2">
         {/* Logo Section - Centered */}
         <div className="flex flex-col items-center mb-16 space-y-4">
           <div>
@@ -66,7 +72,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <div className="mt-16 text-center dark:border-white/10">
+        <div className="mt-16 sm:max-w-2xl max-w-xs text-center dark:border-white/10">
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
             built by{" "}
             <a
