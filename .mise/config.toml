@@ -1,0 +1,6 @@
+[settings]
+experimental = true
+
+[tools]
+node = "24.11.1"
+'npm:pnpm' = "10.22.0"
