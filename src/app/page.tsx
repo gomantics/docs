@@ -76,8 +76,8 @@ export default function Home() {
               className="underline underline-offset-3 hover:text-zinc-900 transition-colors dark:hover:text-zinc-100"
             >
               karn
-            </a>{" "}
-            and{" "}
+            </a>
+            ,{" "}
             <a
               href="https://github.com/rpuneet"
               target="_blank"
@@ -85,6 +85,15 @@ export default function Home() {
               className="underline underline-offset-3 hover:text-zinc-900 transition-colors dark:hover:text-zinc-100"
             >
               puneet
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://cursor.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-3 hover:text-zinc-900 transition-colors dark:hover:text-zinc-100"
+            >
+              cursor
             </a>{" "}
             in 🇮🇳 &sdot;the source code is available on{" "}
             <a
