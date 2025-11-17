@@ -5,6 +5,7 @@ import { LibraryCard } from "@/components/library-card";
 import { GomanticsLogo } from "@/components/logo/gomantics";
 import { BackgroundBeams } from "@/components/ui/shadcn-io/background-beams";
 import { ModeToggle } from "@/components/theme/mode-toggle";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const libraryPatterns: Array<{
   y: number;
@@ -38,9 +39,11 @@ const libraryPatterns: Array<{
 ];
 
 export default function Home() {
+  const isMobile = useIsMobile();
+
   return (
     <div className="min-h-svh relative bg-white dark:bg-zinc-950 flex flex-col items-center justify-center">
-      <BackgroundBeams className="absolute inset-0 z-0" />
+      {!isMobile && <BackgroundBeams className="absolute inset-0 z-0" />}
 
       {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-20">
