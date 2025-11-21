@@ -13,7 +13,12 @@ import { usePathname } from "next/navigation";
 
 import { Header } from "@/components/docs/header";
 import { Navigation } from "@/components/docs/navigation";
-import { defaultNavigation, sxNavigation } from "@/config/docs";
+import {
+  cfgxNavigation,
+  chunkxNavigation,
+  defaultNavigation,
+  sxNavigation,
+} from "@/config/docs";
 
 function MenuIcon(props: React.ComponentPropsWithoutRef<"svg">) {
   return (
@@ -55,6 +60,10 @@ function MobileNavigationDialog({
   const pathname = usePathname();
   const navigation = pathname.startsWith("/sx")
     ? sxNavigation
+    : pathname.startsWith("/chunkx")
+    ? chunkxNavigation
+    : pathname.startsWith("/cfgx")
+    ? cfgxNavigation
     : defaultNavigation;
 
   return (

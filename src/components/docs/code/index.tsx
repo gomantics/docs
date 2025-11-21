@@ -142,7 +142,7 @@ function CodePanel({
   label?: string;
   code?: string;
 }) {
-  const child = Children.only(children);
+  const child = Children.toArray(children).find(isValidElement);
 
   if (isValidElement(child)) {
     const props = child.props as {

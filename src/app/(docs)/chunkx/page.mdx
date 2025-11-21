@@ -1,0 +1,69 @@
+import { HeroPattern } from "@/components/hero-pattern";
+
+export const metadata = {
+  title: "Introduction",
+  description: "Learn about chunkx, a Go library for AST-based code chunking.",
+};
+
+<HeroPattern />
+
+# chunkx
+
+**chunkx** is a Go library for AST-based code chunking implementing the CAST (Chunking via Abstract Syntax Trees) algorithm. It is designed to enhance Code Retrieval-Augmented Generation (RAG) by splitting code into semantically meaningful units rather than arbitrary lines.
+
+The implementation is based on the paper ["cAST: Enhancing Code Retrieval-Augmented Generation with Structural Chunking via Abstract Syntax Tree"](https://arxiv.org/pdf/2506.15655).
+
+## Features
+
+- **Syntax-aware chunking**: Respects code structure (functions, classes, methods) instead of arbitrarily splitting at line boundaries
+- **Multi-language support**: Works with 30+ languages via tree-sitter parsers
+- **Generic fallback**: Automatically falls back to line-based chunking for unsupported file types
+- **Configurable chunk sizes**: Set maximum chunk size in tokens, bytes, or lines
+- **Custom token counters**: Pluggable interface for custom tokenization strategies
+- **Overlap support**: Optional chunk overlapping for better context preservation
+
+## Installation
+
+Install `chunkx` using `go get`:
+
+```bash
+go get github.com/gomantics/chunkx
+```
+
+## Quick Start
+
+Here's a simple example of how to chunk a Go file:
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/gomantics/chunkx"
+    "github.com/gomantics/chunkx/languages"
+)
+
+func main() {
+    // Create a new chunker
+    chunker := chunkx.NewChunker()
+
+    code := `package main
+
+func hello() {
+    fmt.Println("Hello, World!")
+}`
+
+    // Chunk the code
+    chunks, err := chunker.Chunk(code,
+        chunkx.WithLanguage(languages.Go),
+        chunkx.WithMaxSize(50),
+    )
+    if err != nil {
+        panic(err)
+    }
+
+    for i, chunk := range chunks {
+        fmt.Printf("Chunk %d:\n%s\n", i+1, chunk.Content)
+    }
+}
+```

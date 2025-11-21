@@ -1,0 +1,62 @@
+export const metadata = {
+  title: "Supported Languages",
+  description: "List of programming languages supported by chunkx.",
+};
+
+# Supported Languages
+
+`chunkx` uses [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) to parse code into Abstract Syntax Trees (ASTs). This allows it to understand the structure of the code for over 30 languages.
+
+## Supported List
+
+The following languages are fully supported with AST-based chunking:
+
+| Language   | Key                    | Extensions                                         |
+| :--------- | :--------------------- | :------------------------------------------------- |
+| Bash       | `languages.Bash`       | `.sh`, `.bash`                                     |
+| C          | `languages.C`          | `.c`, `.h`                                         |
+| C++        | `languages.CPP`        | `.cpp`, `.cc`, `.cxx`, `.hpp`, `.h`, `.hh`, `.hxx` |
+| C#         | `languages.CSharp`     | `.cs`                                              |
+| CSS        | `languages.CSS`        | `.css`                                             |
+| CUE        | `languages.Cue`        | `.cue`                                             |
+| Dockerfile | `languages.Dockerfile` | `Dockerfile`, `.dockerfile`                        |
+| Elixir     | `languages.Elixir`     | `.ex`, `.exs`                                      |
+| Elm        | `languages.Elm`        | `.elm`                                             |
+| Go         | `languages.Go`         | `.go`                                              |
+| Groovy     | `languages.Groovy`     | `.groovy`, `.gradle`                               |
+| HCL        | `languages.HCL`        | `.hcl`, `.tf`                                      |
+| HTML       | `languages.HTML`       | `.html`, `.htm`                                    |
+| Java       | `languages.Java`       | `.java`                                            |
+| JavaScript | `languages.JavaScript` | `.js`, `.jsx`, `.mjs`, `.cjs`                      |
+| Kotlin     | `languages.Kotlin`     | `.kt`, `.kts`                                      |
+| Lua        | `languages.Lua`        | `.lua`                                             |
+| Markdown   | `languages.Markdown`   | `.md`, `.markdown`                                 |
+| OCaml      | `languages.OCaml`      | `.ml`, `.mli`                                      |
+| PHP        | `languages.PHP`        | `.php`, `.phtml`                                   |
+| Protobuf   | `languages.Protobuf`   | `.proto`                                           |
+| Python     | `languages.Python`     | `.py`, `.pyi`, `.pyw`                              |
+| Ruby       | `languages.Ruby`       | `.rb`, `.rake`, `.gemspec`                         |
+| Rust       | `languages.Rust`       | `.rs`                                              |
+| Scala      | `languages.Scala`      | `.scala`, `.sc`                                    |
+| SQL        | `languages.SQL`        | `.sql`                                             |
+| Svelte     | `languages.Svelte`     | `.svelte`                                          |
+| Swift      | `languages.Swift`      | `.swift`                                           |
+| TOML       | `languages.TOML`       | `.toml`                                            |
+| TypeScript | `languages.TypeScript` | `.ts`, `.tsx`                                      |
+| YAML       | `languages.YAML`       | `.yaml`, `.yml`                                    |
+
+## Language Detection
+
+When using `ChunkFile`, `chunkx` automatically detects the language based on the file extension. If a file matches one of the extensions above, the corresponding Tree-sitter parser is used.
+
+## Fallback Strategy
+
+If a language is not recognized, or if you explicitly use `languages.Generic`, `chunkx` falls back to a **line-based chunking strategy**.
+
+The fallback strategy:
+
+1.  Does not parse the code (no AST).
+2.  Splits code based on line counts or token limits.
+3.  Tries to respect paragraph boundaries (empty lines) if possible to keep related lines together.
+
+This ensures that `chunkx` can still be used to process any text file, even if semantic structure is not available.

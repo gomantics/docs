@@ -94,6 +94,7 @@ export default function Search(nextConfig = {}) {
                   id: 'url',
                   index: 'content',
                   store: ['title', 'pageTitle'],
+                  tag: ['library'],
                 },
                 context: {
                   resolution: 9,
@@ -105,12 +106,14 @@ export default function Search(nextConfig = {}) {
               let data = ${JSON.stringify(data)}
 
               for (let { url, sections } of data) {
+                let library = url.split('/')[1]
                 for (let [title, hash, content] of sections) {
                   sectionIndex.add({
                     url: url + (hash ? ('#' + hash) : ''),
                     title,
                     content: [title, ...content].join('\\n'),
                     pageTitle: hash ? sections[0][0] : undefined,
+                    library,
                   })
                 }
               }

@@ -1,0 +1,85 @@
+export const metadata = {
+  title: "Multi-Environment Strategies",
+  description:
+    "Best practices for handling Development, Staging, and Production configurations.",
+};
+
+# Multi-Environment Strategies
+
+Managing configuration across environments (Dev, Staging, Prod) is one of the hardest parts of application deployment. `cfgx` offers flexible strategies to handle this, depending on whether you prefer **build-time** or **runtime** configuration.
+
+## Strategy 1: Runtime Configuration (Recommended for Containers)
+
+This is the standard "12-Factor App" approach. You build a single binary (or Docker image) and configure it via environment variables when you run it.
+
+**Best for:** Kubernetes, Docker, Open Source tools.
+
+1.  **Generate in Getter Mode:**
+    ```bash
+    cfgx generate --in config.toml --out config.go --mode getter
+    ```
+2.  **Build Once:**
+    Create your Docker image. The `config.toml` values serve as safe defaults.
+3.  **Run Anywhere:**
+    Override specific values using environment variables.
+
+    ```bash
+    # Production
+    docker run -e CONFIG_DATABASE_URL="postgres://prod-db..." myapp
+
+    # Staging
+    docker run -e CONFIG_DATABASE_URL="postgres://staging-db..." myapp
+    ```
+
+## Strategy 2: Build-Time Injection (Recommended for CI/CD)
+
+If you use **Static Mode** for performance but need to inject secrets (like API keys) that shouldn't be in your source code, you can use build-time environment overrides.
+
+**Best for:** CI/CD pipelines, Serverless functions.
+
+1.  **Define Placeholders:**
+    Put dummy values in your `config.toml` for secrets.
+    ```toml
+    [stripe]
+    key = "dummy_key"
+    ```
+2.  **Inject during Generation:**
+    In your CI pipeline (GitHub Actions, GitLab CI), export the real secrets as environment variables _before_ running `cfgx`.
+
+    ```bash
+    # In CI pipeline
+    export CONFIG_STRIPE_KEY=${{ secrets.STRIPE_KEY }}
+    cfgx generate --in config.toml --out config.go --mode static
+    ```
+
+3.  **Build:**
+    The generated Go code now contains the production secret hardcoded. The binary is self-contained and ready to deploy.
+
+## Strategy 3: Multiple Config Files
+
+Sometimes environments differ significantly (e.g., Dev uses SQLite, Prod uses Postgres; or Dev has debug flags enabled). In this case, maintaining separate TOML files is cleaner.
+
+**Best for:** Radical configuration differences between environments.
+
+1.  **Create Separate Configs:**
+
+    - `config.dev.toml`
+    - `config.prod.toml`
+
+2.  **Select at Build Time:**
+
+    ```bash
+    # For local dev
+    cfgx generate --in config.dev.toml --out config.go
+
+    # For production build
+    cfgx generate --in config.prod.toml --out config.go
+    ```
+
+### Tip: Comparing Environments
+
+Use `cfgx diff` to ensure you haven't missed any keys between your environments.
+
+```bash
+cfgx diff config.dev.toml config.prod.toml
+```

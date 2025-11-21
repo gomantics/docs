@@ -1,0 +1,40 @@
+export const metadata = {
+  title: "Performance",
+  description: "Benchmark results and performance characteristics of chunkx.",
+};
+
+# Performance
+
+AST-based chunking is computationally more intensive than simple string splitting because it involves parsing the code. However, `chunkx` is optimized to be fast enough for real-time indexing and processing.
+
+## Benchmarks
+
+The following benchmarks were run on an Apple M4 Max.
+
+```
+BenchmarkASTChunking-14                              41301     85932 ns/op   19520 B/op     170 allocs/op
+BenchmarkLineBasedChunking-14                      4392780       831.6 ns/op   1904 B/op      10 allocs/op
+BenchmarkASTChunkingLarge-14                         4681    769800 ns/op  110464 B/op     794 allocs/op
+BenchmarkLineBasedChunkingLarge-14                 437184      8273 ns/op   16880 B/op      27 allocs/op
+BenchmarkASTChunkingMultipleLanguages-14            22951    156257 ns/op   42336 B/op     336 allocs/op
+BenchmarkTokenCounters/SimpleTokenCounter-14        51332     70434 ns/op    4760 B/op      20 allocs/op
+BenchmarkTokenCounters/ByteCounter-14               40485     88952 ns/op   21504 B/op     227 allocs/op
+BenchmarkTokenCounters/LineCounter-14               51607     70349 ns/op    3224 B/op      19 allocs/op
+BenchmarkOverlapChunking/Overlap0-14                42333     85163 ns/op   19544 B/op     172 allocs/op
+BenchmarkOverlapChunking/Overlap10-14               41676     85761 ns/op   21832 B/op     187 allocs/op
+BenchmarkOverlapChunking/Overlap25-14               42122     85715 ns/op   22032 B/op     187 allocs/op
+BenchmarkOverlapChunking/Overlap50-14               41696     85976 ns/op   22360 B/op     187 allocs/op
+```
+
+### Analysis
+
+- **AST Overhead**: AST-based chunking is approximately **100x slower** than naive line-based chunking. This is the expected cost of parsing.
+- **Throughput**: Despite the overhead, it can still process **~12,000 files per second** (small files) or **~1,300 large files per second** on a modern CPU, making it viable for large codebases.
+- **Token Counters**: `SimpleTokenCounter` and `LineCounter` are the fastest. `ByteCounter` has slightly higher allocation overhead.
+- **Overlap**: Adding overlap has a negligible performance impact (~0.5%).
+
+## Optimization Tips
+
+1.  **Reuse Chunkers**: If you are processing many files, reuse the `Chunker` instance (though currently `NewChunker` is cheap, future optimizations might add state).
+2.  **Concurrency**: `chunkx` is safe for concurrent use. You can parallelize file processing using Goroutines to maximize throughput, especially when IO-bound reading files.
+3.  **Appropriate Token Counters**: Use `SimpleTokenCounter` (default) for speed. Only use `tiktoken` or other heavy counters if you strictly need to match a specific model's vocabulary.

@@ -1,0 +1,104 @@
+export const metadata = {
+  title: "Token Counting",
+  description:
+    "Understanding token counters in chunkx and integrating with LLMs.",
+};
+
+# Token Counting
+
+Accurate token counting is crucial for RAG applications to ensure chunks fit within LLM context windows. `chunkx` allows you to customize how "size" is calculated.
+
+## Built-in Counters
+
+`chunkx` comes with several built-in counters for common use cases.
+
+### SimpleTokenCounter (Default)
+
+Splits text by whitespace to estimate token count. Fast and sufficient for rough estimations or when exact token limits aren't strict.
+
+### ByteCounter
+
+Counts the number of bytes in the chunk content. Useful when storage or transmission limits are byte-based.
+
+```go
+import "github.com/gomantics/chunkx"
+
+chunks, err := chunker.Chunk(code,
+    chunkx.WithLanguage(languages.Python),
+    chunkx.WithMaxSize(4096),
+    chunkx.WithTokenCounter(&chunkx.ByteCounter{}),
+)
+```
+
+### LineCounter
+
+Counts the number of lines. Useful for display purposes or simple splitting.
+
+```go
+chunks, err := chunker.Chunk(code,
+    chunkx.WithTokenCounter(&chunkx.LineCounter{}),
+)
+```
+
+## Custom Token Counters
+
+You can implement the `TokenCounter` interface to provide your own logic.
+
+```go
+type TokenCounter interface {
+    CountTokens(text string) (int, error)
+}
+```
+
+Example of a custom counter:
+
+```go
+type WordCounter struct{}
+
+func (w *WordCounter) CountTokens(text string) (int, error) {
+    return len(strings.Fields(text)), nil
+}
+
+// Usage
+chunker.Chunk(code, chunkx.WithTokenCounter(&WordCounter{}))
+```
+
+## OpenAI Integration (tiktoken)
+
+For production applications using OpenAI models (GPT-4, GPT-3.5), you should use a tokenizer that matches the model's vocabulary. The `tiktoken-go` library is recommended.
+
+```go
+import (
+    "github.com/pkoukk/tiktoken-go"
+    "github.com/gomantics/chunkx"
+)
+
+type TikTokenCounter struct {
+    encoding *tiktoken.Tiktoken
+}
+
+func NewTikTokenCounter(model string) (*TikTokenCounter, error) {
+    encoding, err := tiktoken.EncodingForModel(model)
+    if err != nil {
+        return nil, err
+    }
+    return &TikTokenCounter{encoding: encoding}, nil
+}
+
+func (t *TikTokenCounter) CountTokens(text string) (int, error) {
+    // Encode returns the tokens; we just need the count
+    tokens := t.encoding.Encode(text, nil, nil)
+    return len(tokens), nil
+}
+
+func main() {
+    counter, _ := NewTikTokenCounter("gpt-4")
+
+    chunks, _ := chunker.Chunk(code,
+        chunkx.WithMaxSize(8192), // Exact GPT-4 token limit
+        chunkx.WithTokenCounter(counter),
+    )
+}
+```
+
+This approach ensures your chunks are maximally sized without exceeding the model's context window.

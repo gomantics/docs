@@ -4,8 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/docs/button";
-import { defaultNavigation, sxNavigation } from "@/config/docs";
 import { type NavGroup } from "@/components/docs/navigation";
+import {
+  cfgxNavigation,
+  chunkxNavigation,
+  defaultNavigation,
+  sxNavigation,
+} from "@/config/docs";
 
 function PageLink({
   label,
@@ -42,6 +47,10 @@ function PageNavigation() {
   const pathname = usePathname();
   const navigation = pathname.startsWith("/sx")
     ? sxNavigation
+    : pathname.startsWith("/chunkx")
+    ? chunkxNavigation
+    : pathname.startsWith("/cfgx")
+    ? cfgxNavigation
     : defaultNavigation;
   const allPages = navigation.flatMap((group: NavGroup) => group.links);
   const currentPageIndex = allPages.findIndex(

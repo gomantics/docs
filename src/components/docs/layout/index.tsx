@@ -12,7 +12,12 @@ import {
   SectionProvider,
   type Section,
 } from "@/components/docs/section-provider";
-import { defaultNavigation, sxNavigation } from "@/config/docs";
+import {
+  cfgxNavigation,
+  chunkxNavigation,
+  defaultNavigation,
+  sxNavigation,
+} from "@/config/docs";
 
 export function Layout({
   children,
@@ -28,6 +33,10 @@ export function Layout({
 
   const navigation = pathname.startsWith("/sx")
     ? sxNavigation
+    : pathname.startsWith("/chunkx")
+    ? chunkxNavigation
+    : pathname.startsWith("/cfgx")
+    ? cfgxNavigation
     : defaultNavigation;
 
   return (

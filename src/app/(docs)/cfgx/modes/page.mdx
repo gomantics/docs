@@ -1,0 +1,86 @@
+export const metadata = {
+  title: "Generation Modes",
+  description:
+    "Choose between Static Mode for performance or Getter Mode for flexibility.",
+};
+
+# Generation Modes
+
+`cfgx` is versatile. It can generate two very different types of configuration code depending on your needs. You select the mode using the `--mode` flag.
+
+## Static Mode (Default)
+
+In static mode, `cfgx` bakes your configuration values directly into the generated Go structs.
+
+```bash
+cfgx generate --in config.toml --out config.go --mode static
+```
+
+### How it works
+
+The generated code contains simple struct definitions and a global variable initialized with the values from your TOML file.
+
+```go
+// Generated Static Code
+type ServerConfig struct {
+    Port int64
+}
+
+var Server = ServerConfig{
+    Port: 8080, // Hardcoded from TOML
+}
+```
+
+### When to use
+
+- **Internal Applications**: When you control the deployment and can rebuild for config changes.
+- **Performance Critical**: Access is instant (memory read). Zero runtime logic.
+- **Immutable Config**: You want to guarantee the config matches exactly what was committed/built.
+
+## Getter Mode
+
+In getter mode, `cfgx` generates structs with methods (Getters) that look up values at runtime, falling back to the TOML defaults if no override is found.
+
+```bash
+cfgx generate --in config.toml --out config.go --mode getter
+```
+
+### How it works
+
+Instead of public fields, `cfgx` generates methods. These methods check environment variables first.
+
+```go
+// Generated Getter Code
+type ServerConfig struct{}
+
+func (ServerConfig) Port() int64 {
+    // 1. Check Env Var
+    if v := os.Getenv("CONFIG_SERVER_PORT"); v != "" {
+        if i, err := strconv.ParseInt(v, 10, 64); err == nil {
+            return i
+        }
+    }
+    // 2. Fallback to TOML default
+    return 8080
+}
+
+var Server ServerConfig
+```
+
+### Runtime Overrides
+
+This enables 12-factor app behavior. You can override any config value by setting an environment variable at runtime.
+
+The format is `CONFIG_<SECTION>_<KEY>`.
+
+```bash
+# Override the port without rebuilding
+export CONFIG_SERVER_PORT="9090"
+./my-app
+```
+
+### When to use
+
+- **Open Source / Libraries**: Users need to configure your tool without recompiling it.
+- **Containerized Apps**: You want to use the same Docker image for Dev, Staging, and Prod, just changing environment variables.
+- **Secrets**: You don't want to commit secrets to TOML. You can set them as env vars in your deployment platform (K8s, AWS Lambda, etc.).

@@ -1,0 +1,43 @@
+export const metadata = {
+  title: "FAQ",
+  description: "Frequently asked questions about cfgx.",
+};
+
+# FAQ
+
+## Should I commit the generated code?
+
+**Yes.**
+
+Just like `sqlc` (for SQL) or `protoc` (for Protocol Buffers), the generated code is part of your application's source. It should be committed to your version control system. This ensures that your application is buildable by anyone who checks it out, without needing to run code generation tools first.
+
+**Caveat:** Do not commit `config.toml` files that contain production secrets. Use [Environment Variable Injection](/cfgx/multi-env) for secrets.
+
+## Why TOML? Why not YAML or JSON?
+
+TOML is designed specifically for configuration.
+
+- **Unambiguous:** Unlike YAML, TOML has strict types. "NO" is a string, not a boolean.
+- **Readable:** It maps cleanly to hash tables and structs.
+- **Comments:** Unlike JSON, you can write comments to explain your config values.
+
+`cfgx` relies on TOML's strict typing to generate accurate Go structs.
+
+## Can I edit the generated Go file?
+
+**No.**
+
+The file header contains `Code generated ... DO NOT EDIT`. Any changes you make will be overwritten the next time you run `cfgx`. If you need to add logic, create a wrapper struct or a helper function in a separate file in the same package.
+
+## How do I handle secrets?
+
+Never commit secrets to your `config.toml`.
+
+1.  **Getter Mode:** Set secrets as environment variables at runtime (e.g. in Kubernetes Secrets).
+2.  **Static Mode:** Set secrets as environment variables in your CI/CD pipeline before running `cfgx generate`.
+
+See the [Multi-Environment Guide](/cfgx/multi-env) for details.
+
+## What happens if an environment variable is missing in Getter Mode?
+
+`cfgx` silently falls back to the default value defined in your `config.toml`. This ensures your application always has a valid configuration state and doesn't crash on startup due to a missing optional override.

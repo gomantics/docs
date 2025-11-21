@@ -1,0 +1,66 @@
+export const metadata = {
+  title: "CLI Reference",
+  description: "Command line interface reference for cfgx.",
+};
+
+# CLI Reference
+
+## `generate`
+
+The core command. Generates Go code from a TOML configuration file.
+
+```bash
+cfgx generate [flags]
+```
+
+### Flags
+
+| Flag              | Short | Type   | Default       | Description                                              |
+| :---------------- | :---- | :----- | :------------ | :------------------------------------------------------- |
+| `--in`            | `-i`  | string | `config.toml` | Input TOML file path.                                    |
+| `--out`           | `-o`  | string | (required)    | Output Go file path.                                     |
+| `--pkg`           | `-p`  | string | (auto)        | Go package name. Inferred from directory if omitted.     |
+| `--mode`          |       | string | `static`      | Generation mode: `static` or `getter`.                   |
+| `--no-env`        |       | bool   | `false`       | Disable build-time env var overrides (static mode only). |
+| `--max-file-size` |       | string | `1MB`         | Max size for `file:` references.                         |
+
+## `watch`
+
+Watches the input file for changes and re-runs `generate` automatically.
+
+```bash
+cfgx watch [flags]
+```
+
+Accepts all flags supported by `generate`, plus:
+
+| Flag         | Type | Default | Description                     |
+| :----------- | :--- | :------ | :------------------------------ |
+| `--debounce` | int  | `100`   | Debounce delay in milliseconds. |
+
+## `diff`
+
+Compares two TOML files. Useful for verifying differences between environment configurations (e.g., `dev` vs `prod`).
+
+```bash
+cfgx diff <file1> <file2> [flags]
+```
+
+### Flags
+
+| Flag          | Type   | Default | Description                                  |
+| :------------ | :----- | :------ | :------------------------------------------- |
+| `--keys-only` | bool   | `false` | Show only keys that differ, ignoring values. |
+| `--format`    | string | `text`  | Output format: `text` or `json`.             |
+
+### Example Output
+
+```text
+Differences between config.dev.toml and config.prod.toml:
+
+  server.addr
+    - ":8080"     (config.dev.toml)
+    + ":443"      (config.prod.toml)
+
+  + server.tls_enabled = true     (only in config.prod.toml)
+```

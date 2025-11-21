@@ -1,0 +1,132 @@
+import { HeroPattern } from "@/components/hero-pattern";
+
+export const metadata = {
+  title: "Introduction",
+  description:
+    "Type-safe configuration code generation for Go. Zero runtime dependencies.",
+};
+
+<HeroPattern />
+
+# cfgx
+
+`cfgx` changes how you handle configuration in Go. Instead of loading, parsing, and validating configuration files at runtime (and hoping for the best), `cfgx` generates type-safe Go code from your config definition.
+
+It treats configuration as a build-time concern, not a runtime one.
+
+## The Problem
+
+Traditional Go configuration libraries (like Viper) usually follow this pattern:
+
+1.  **Runtime Loading**: Read `config.yaml` or `config.json` when the app starts.
+2.  **Runtime Unmarshaling**: Use reflection to map loosely-typed data to structs.
+3.  **Runtime Errors**: Crash or misbehave if a key is missing, a type is wrong, or the file isn't found.
+
+This introduces:
+
+- **Runtime Overhead**: Parsing and reflection cost CPU and memory.
+- **Fragility**: A typo in your config file crashes your production app.
+- **Deployment Complexity**: You must ensure the config file exists alongside your binary.
+
+## The cfgx Solution
+
+`cfgx` flips the model. You define your configuration _once_ in a TOML file, and `cfgx` generates strongly-typed Go code that has your values baked in (or knows how to fetch them safely).
+
+### 1. Define
+
+Create a `config.toml` with your default values. This acts as your schema and your default configuration.
+
+```toml
+# config.toml
+[server]
+host = "0.0.0.0"
+port = 8080
+timeout = "30s"  # Smart duration detection!
+
+[database]
+url = "postgres://localhost:5432/app"
+max_conns = 20
+```
+
+### 2. Generate
+
+Run `cfgx` to turn that TOML into Go code.
+
+```bash
+cfgx generate --in config.toml --out config/config.go
+```
+
+### 3. Use
+
+Import your config. No loading. No error checking. Just typed values.
+
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+    "my-app/config" // Your generated package
+)
+
+func main() {
+    // Use values directly. They are just Go structs.
+    addr := fmt.Sprintf("%s:%d", config.Server.Host, config.Server.Port)
+
+    // Duration is already a time.Duration
+    server := &http.Server{
+        Addr:         addr,
+        ReadTimeout:  config.Server.Timeout,
+    }
+
+    fmt.Printf("Starting server on %s...\n", addr)
+    server.ListenAndServe()
+}
+```
+
+## Why Choose cfgx?
+
+### 🛡️ Type Safety
+
+If your config says `port = 8080`, `cfgx` generates an `int64`. If you have `timeout = "30s"`, you get a `time.Duration`. No more `interface{}` casting or runtime type assertions.
+
+### 🚀 Zero Runtime Overhead
+
+In **Static Mode** (the default), `cfgx` compiles your values directly into the binary. Accessing a config value is as fast as reading a global variable. There is no file I/O, no parsing, and no reflection at runtime.
+
+### 📦 Self-Contained Binaries
+
+Your default configuration is compiled into your app. You can ship a single binary without needing to copy `config.toml` alongside it. It just works.
+
+### 🔧 Environment Overrides
+
+Need to change values for production?
+
+- **Build Time**: Inject values when you run `generate`.
+- **Runtime**: Use **Getter Mode** to let your app read environment variables (e.g., `CONFIG_SERVER_PORT`) at runtime, falling back to your defaults.
+
+## Installation
+
+### Global Installation
+
+Install `cfgx` globally to use it from anywhere in your terminal:
+
+```bash
+go install github.com/gomantics/cfgx/cmd/cfgx@latest
+```
+
+### Project Dependency (Go 1.24+)
+
+For a reproducible build, you can add `cfgx` as a tool dependency in your project:
+
+```bash
+go get -tool github.com/gomantics/cfgx/cmd/cfgx
+```
+
+Then run it using `go tool`:
+
+```bash
+go tool cfgx generate ...
+```
+
+Ready to ditch runtime parsing? [Get started with the CLI](/cfgx/cli).

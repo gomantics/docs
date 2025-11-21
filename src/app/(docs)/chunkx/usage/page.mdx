@@ -1,0 +1,87 @@
+export const metadata = {
+  title: "Usage",
+  description: "Learn how to use chunkx to split code into semantic chunks.",
+};
+
+# Usage
+
+`chunkx` provides a flexible API for chunking code. This guide covers common usage patterns and configuration options.
+
+## Basic Usage
+
+The core interface is the `Chunker`. You can create one with `NewChunker()` and use the `Chunk` method.
+
+```go
+import (
+    "github.com/gomantics/chunkx"
+    "github.com/gomantics/chunkx/languages"
+)
+
+func main() {
+    chunker := chunkx.NewChunker()
+
+    code := "// Your source code here..."
+
+    // Specify the language explicitly
+    chunks, err := chunker.Chunk(code, chunkx.WithLanguage(languages.Python))
+}
+```
+
+## File-based Chunking
+
+If you are processing files from the filesystem, `ChunkFile` is a convenient helper that reads the file and automatically detects the language based on the file extension.
+
+```go
+// Automatically detects language (e.g., .go -> languages.Go)
+chunks, err := chunker.ChunkFile("path/to/main.go")
+```
+
+If the file extension is not recognized, `chunkx` falls back to a generic line-based chunking strategy.
+
+## Configuration Options
+
+You can customize the chunking behavior using functional options passed to `Chunk` or `ChunkFile`.
+
+### Max Chunk Size
+
+Control the maximum size of each chunk. The unit depends on the token counter used (default is a simple whitespace-based token counter).
+
+```go
+chunks, err := chunker.Chunk(code,
+    chunkx.WithLanguage(languages.Go),
+    chunkx.WithMaxSize(1000), // Limit to 1000 tokens
+)
+```
+
+### Overlap
+
+You can specify an overlap between chunks to preserve context across boundaries. This is specified as a percentage (0-100).
+
+```go
+chunks, err := chunker.Chunk(code,
+    chunkx.WithLanguage(languages.Go),
+    chunkx.WithOverlap(10), // 10% overlap
+)
+```
+
+### The Chunk Structure
+
+The `Chunk` method returns a slice of `Chunk` structs containing metadata about each segment.
+
+```go
+type Chunk struct {
+    Content    string                // The actual code content
+    StartLine  int                   // Starting line number (1-based)
+    EndLine    int                   // Ending line number (1-based)
+    StartByte  int                   // Starting byte offset
+    EndByte    int                   // Ending byte offset
+    NodeTypes  []string              // AST node types included (e.g., "function_declaration")
+    Language   languages.LanguageName
+}
+```
+
+This metadata is useful for:
+
+- **High-lighting**: Using line numbers to show the source.
+- **Filtering**: Using `NodeTypes` to filter out specific constructs.
+- **Debugging**: Verifying exactly what code corresponds to a chunk.

@@ -39,6 +39,13 @@ type Autocomplete = AutocompleteApi<
 function useAutocomplete({ onNavigate }: { onNavigate: () => void }) {
   const id = useId();
   const router = useRouter();
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
+
   const [autocompleteState, setAutocompleteState] = useState<
     AutocompleteState<Result> | EmptyObject
   >({});
@@ -71,12 +78,18 @@ function useAutocomplete({ onNavigate }: { onNavigate: () => void }) {
         navigate,
       },
       getSources({ query }) {
+        const library = pathnameRef.current?.split("/")[1] || undefined;
         return import("@/mdx/search.mjs").then(({ search }) => {
           return [
             {
               sourceId: "documentation",
               getItems() {
-                return search(query, { limit: 5 });
+                return search(query, {
+                  limit: 7,
+                  tag: {
+                    library,
+                  },
+                });
               },
               getItemUrl({ item }) {
                 return item.url;

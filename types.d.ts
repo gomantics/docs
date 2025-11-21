@@ -5,7 +5,13 @@ declare module "@/mdx/search.mjs" {
     url: string;
     title: string;
     pageTitle?: string;
+    library?: string;
   };
 
-  export function search(query: string, options?: SearchOptions): Array<Result>;
+  export function search(
+    query: string,
+    options?: SearchOptions & {
+      tag?: { [field: string]: string | string[] | undefined };
+    }
+  ): Array<Result>;
 }

@@ -1,0 +1,45 @@
+export const metadata = {
+  title: "Architecture",
+  description: "Deep dive into the CAST algorithm and chunkx design.",
+};
+
+# Architecture
+
+`chunkx` is built around the **CAST (Chunking via Abstract Syntax Trees)** algorithm. This approach differs fundamentally from traditional text splitters by leveraging the syntactic structure of code.
+
+## The CAST Algorithm
+
+The algorithm operates in several phases:
+
+### 1. Parsing
+
+The source code is parsed using Tree-sitter to generate a full Abstract Syntax Tree (AST). This tree represents the hierarchical structure of the code (e.g., a Class node containing Method nodes, which contain Statement nodes).
+
+### 2. Traversal & Grouping
+
+The algorithm recursively traverses the AST. It attempts to group nodes into semantically meaningful units.
+
+- **Small Nodes**: If a node (and its children) fits within the maximum chunk size, it is kept as a single unit.
+- **Large Nodes**: If a node exceeds the limit (e.g., a very long function), the algorithm descends into its children to find smaller split points.
+
+### 3. Merging
+
+To maximize information density, the algorithm attempts to merge smaller sibling nodes. For example, several short variable declarations might be grouped into a single chunk rather than having one chunk per line.
+
+### 4. Overlap Management
+
+If configured, overlaps are calculated based on the token/line boundaries of adjacent chunks to ensure context flows smoothly from one chunk to the next.
+
+## Design Principles
+
+`chunkx` follows a set of core design principles:
+
+1.  **Minimalist**: The codebase is kept clean and focused. It does one thing well: chunking code.
+2.  **Well-tested**: We rely on comprehensive testing, including "approval tests" (snapshots) that verify the chunking output for real-world code examples across all supported languages.
+3.  **Pluggable**: Key components like the `TokenCounter` are interfaces, allowing users to swap in their own implementations (e.g., for specific LLM tokenizers).
+4.  **Language-agnostic Core**: While parsing is language-specific, the chunking logic is generic and operates on the abstract tree structure, ensuring consistent behavior across languages.
+
+## References
+
+- [cAST Paper (arXiv:2506.15655)](https://arxiv.org/pdf/2506.15655)
+- [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)

@@ -1,0 +1,134 @@
+export const metadata = {
+  title: "Features",
+  description: "Explore the core features of cfgx.",
+};
+
+# Features
+
+`cfgx` isn't just a TOML-to-Struct converter. It includes several smart features designed to make configuration management easier and more robust.
+
+## Smart Type Inference
+
+`cfgx` analyzes your TOML values to determine the most specific Go type possible. You don't need to define a separate schema file; your values _are_ the schema.
+
+### Auto-detected Types
+
+| TOML Value        | Generated Go Type | Notes                           |
+| :---------------- | :---------------- | :------------------------------ |
+| `port = 8080`     | `int64`           | Integers are 64-bit by default. |
+| `ratio = 1.5`     | `float64`         | Floating point support.         |
+| `debug = true`    | `bool`            | Boolean flags.                  |
+| `name = "App"`    | `string`          | Standard strings.               |
+| `timeout = "10s"` | `time.Duration`   | **Smart Detection!**            |
+
+### Duration Parsing
+
+One of the most common config errors is mixing up units (is "30" seconds or milliseconds?). `cfgx` solves this by automatically detecting Go duration strings.
+
+If a string value looks like a duration (e.g., `"10s"`, `"500ms"`, `"2h"`), `cfgx` generates a `time.Duration` field and parses the value at compile time.
+
+```toml
+# config.toml
+cache_ttl = "5m"
+request_timeout = "500ms"
+```
+
+```go
+// Generated Code
+type Config struct {
+    CacheTtl       time.Duration
+    RequestTimeout time.Duration
+}
+
+var Cfg = Config{
+    CacheTtl:       5 * time.Minute,
+    RequestTimeout: 500 * time.Millisecond,
+}
+```
+
+## Deep Nesting & Arrays
+
+Configuration is rarely flat. `cfgx` supports arbitrarily deep nesting and arrays of any supported type.
+
+### Nested Tables
+
+TOML tables become nested Go structs.
+
+```toml
+[database]
+host = "localhost"
+
+[database.pool]
+max_open = 100
+max_idle = 10
+```
+
+Generates:
+
+```go
+type DatabaseConfig struct {
+    Host string
+    Pool PoolConfig
+}
+
+type PoolConfig struct {
+    MaxOpen int64
+    MaxIdle int64
+}
+```
+
+### Arrays of Tables
+
+You can even have arrays of objects, which is great for defining lists of backends, peers, or rules.
+
+```toml
+[[backends]]
+name = "primary"
+url = "http://primary:8080"
+
+[[backends]]
+name = "secondary"
+url = "http://secondary:8080"
+```
+
+## File Embedding
+
+This is a standout feature for building self-contained binaries. You can embed the contents of external files directly into your generated configuration code using the `file:` prefix.
+
+This is incredibly useful for:
+
+- SSL/TLS Certificates
+- SQL Migration Scripts
+- HTML/Email Templates
+- Default Assets (Logos, Icons)
+
+```toml
+[server]
+# Reads local file "certs/server.key" during generation
+tls_key = "file:certs/server.key"
+```
+
+`cfgx` will read the file at generation time and inject it as a `[]byte` slice in your Go code.
+
+```go
+// Generated
+type ServerConfig struct {
+    TlsKey []byte
+}
+
+var Server = ServerConfig{
+    TlsKey: []byte{0x2d, 0x2d, 0x2d, ...}, // Your file contents
+}
+```
+
+> **Note:** The file path is relative to the `config.toml` file. By default, file size is limited to 1MB to prevent accidental bloating of binaries, but this can be increased with the `--max-file-size` flag.
+
+## Watch Mode
+
+For a smoother development experience, `cfgx` includes a watch mode. It monitors your `config.toml` for changes and re-runs the generation automatically.
+
+```bash
+cfgx watch --in config.toml --out config/config.go
+```
+
+Keep this running in a separate terminal tab while you develop. Every time you save `config.toml`, your Go code updates instantly.
