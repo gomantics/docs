@@ -62,4 +62,11 @@ export const cfgxNavigation: Array<NavGroup> = [
   },
 ];
 
+export const semantixNavigation: Array<NavGroup> = [
+  {
+    title: "Getting Started",
+    links: [{ title: "Introduction", href: "/semantix" }],
+  },
+];
+
 export const defaultNavigation: Array<NavGroup> = [];

@@ -16,8 +16,16 @@ import {
   cfgxNavigation,
   chunkxNavigation,
   defaultNavigation,
+  semantixNavigation,
   sxNavigation,
 } from "@/config/docs";
+
+const navigationMap: Record<string, typeof defaultNavigation> = {
+  sx: sxNavigation,
+  chunkx: chunkxNavigation,
+  cfgx: cfgxNavigation,
+  semantix: semantixNavigation,
+};
 
 export function Layout({
   children,
@@ -27,16 +35,12 @@ export function Layout({
   allSections: Record<string, Array<Section>>;
 }) {
   const pathname = usePathname();
-  const library = ["sx", "chunkx", "cfgx", "semantix"].find((lib) =>
+  const library = Object.keys(navigationMap).find((lib) =>
     pathname.startsWith(`/${lib}`)
   );
 
-  const navigation = pathname.startsWith("/sx")
-    ? sxNavigation
-    : pathname.startsWith("/chunkx")
-    ? chunkxNavigation
-    : pathname.startsWith("/cfgx")
-    ? cfgxNavigation
+  const navigation = library
+    ? navigationMap[library] ?? defaultNavigation
     : defaultNavigation;
 
   return (
