@@ -7,7 +7,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SemantixLayout({ children }: { children: React.ReactNode }) {
+export default function SemantixLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <>{children}</>;
 }
-
