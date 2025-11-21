@@ -34,6 +34,19 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_GIT_SHA: getGitSHA(),
   },
+  async headers() {
+    return [
+      {
+        source: "/og/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default withSearch(withMDX(nextConfig));
