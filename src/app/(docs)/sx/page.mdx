@@ -1,0 +1,54 @@
+import { HeroPattern } from "@/components/hero-pattern";
+
+export const metadata = {
+  description:
+    "A simple Go library for string case conversion. Converts between camelCase, PascalCase, kebab-case, snake_case, and more.",
+};
+
+<HeroPattern />
+
+# Introduction
+
+`sx` is a simple Go library for string case conversion. It provides a robust set of utilities to convert strings between various cases such as `camelCase`, `PascalCase`, `kebab-case`, `snake_case`, and more.
+
+<div className="not-prose mb-16 mt-6 flex gap-3">
+  <Button href="/sx/usage" arrow="right" children="Quickstart" />
+  <Button href="/sx/api" variant="outline" children="Explore API" />
+</div>
+
+## Features
+
+- **Comprehensive Case Support**: Convert between `camelCase`, `PascalCase`, `kebab-case`, `snake_case`, `Train-Case`, and `flatcase`.
+- **Intelligent Splitting**: Handles mixed separators and case transitions intelligently.
+- **Customizable**: Support for custom separators and normalization rules.
+- **Unicode Support**: Works with Unicode characters.
+- **Zero Dependencies**: Lightweight and easy to integrate.
+
+## Installation
+
+To install `sx`, use `go get`:
+
+```bash
+go get github.com/gomantics/sx
+```
+
+## Basic Usage
+
+Here's a quick example of how to use `sx` in your project:
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/gomantics/sx"
+)
+
+func main() {
+	// Convert to different cases
+	fmt.Println(sx.CamelCase("hello-world"))  // helloWorld
+	fmt.Println(sx.PascalCase("hello_world")) // HelloWorld
+	fmt.Println(sx.KebabCase("HelloWorld"))   // hello-world
+}
+```

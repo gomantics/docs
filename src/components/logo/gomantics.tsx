@@ -1,12 +1,14 @@
 import { cn } from "@/lib/utils";
 
-export const GomanticsLogo = ({ className }: { className?: string }) => {
+export const GomanticsLogo = (props: React.ComponentPropsWithoutRef<"svg">) => {
   return (
     <svg
       viewBox="0 0 1965 500"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn(className, "text-zinc-900 dark:text-zinc-100")}
+      className={cn("text-zinc-900 dark:text-zinc-100", props.className)}
+      aria-hidden="true"
+      {...props}
     >
       <path
         d="M310.667 250V280.333C310.667 288.378 307.471 296.094 301.782 301.782C296.094 307.471 288.378 310.667 280.333 310.667H204.5C200.478 310.667 196.62 312.264 193.776 315.109C190.931 317.953 189.333 321.811 189.333 325.833V371.333C189.333 379.378 192.529 387.094 198.218 392.782C203.907 398.471 211.622 401.667 219.667 401.667H371.333C379.378 401.667 387.094 398.471 392.782 392.782C398.471 387.094 401.667 379.378 401.667 371.333V219.667C401.667 211.622 398.471 203.906 392.782 198.218C387.094 192.529 379.378 189.333 371.333 189.333"

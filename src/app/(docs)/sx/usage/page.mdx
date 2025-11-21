@@ -1,0 +1,126 @@
+export const metadata = {
+  title: "Usage",
+  description:
+    "Learn how to use sx for string case conversion and manipulation.",
+};
+
+# Usage
+
+`sx` provides a simple and intuitive API for handling string case conversions. This guide covers common usage patterns and advanced configurations.
+
+## Case Conversion
+
+The core functionality of `sx` is converting strings between different cases.
+
+### Camel Case
+
+Converts strings to `camelCase`.
+
+```go
+sx.CamelCase("hello-world") // helloWorld
+sx.CamelCase("Hello World") // helloWorld
+sx.CamelCase("hello_world") // helloWorld
+```
+
+### Pascal Case
+
+Converts strings to `PascalCase`.
+
+```go
+sx.PascalCase("hello-world") // HelloWorld
+sx.PascalCase("camelCase")   // CamelCase
+```
+
+### Kebab Case
+
+Converts strings to `kebab-case`.
+
+```go
+sx.KebabCase("HelloWorld")   // hello-world
+sx.KebabCase("camelCase")    // camel-case
+```
+
+### Snake Case
+
+Converts strings to `snake_case`.
+
+```go
+sx.SnakeCase("HelloWorld")   // hello_world
+sx.SnakeCase("kebab-case")   // kebab_case
+```
+
+### Train Case
+
+Converts strings to `Train-Case`.
+
+```go
+sx.TrainCase("hello_world")  // Hello-World
+```
+
+### Flat Case
+
+Converts strings to `flatcase` (lowercase, no separators).
+
+```go
+sx.FlatCase("Hello World")   // helloworld
+```
+
+## Advanced Options
+
+### Normalization
+
+By default, `sx` preserves consecutive uppercase letters (e.g., `XMLRequest` -> `XMLRequest`). If you want strict normalization (e.g., `XMLRequest` -> `XmlRequest`), use the `WithNormalize` option.
+
+```go
+// Default behavior
+sx.PascalCase("XMLHttpRequest") // XMLHttpRequest
+
+// With normalization
+sx.PascalCase("XMLHttpRequest", sx.WithNormalize(true)) // XmlHttpRequest
+```
+
+### Custom Separators
+
+When splitting strings, `sx` uses a default set of separators. You can override this behavior using `SplitByCase` with `WithSeparators`.
+
+```go
+// Custom separators for splitting
+words := sx.SplitByCase("hello|world", sx.WithSeparators('|'))
+// ["hello", "world"]
+```
+
+### Custom Kebab Separator
+
+`KebabCase` allows you to specify a custom separator string.
+
+```go
+sx.KebabCase("hello world", "|") // hello|world
+```
+
+## Utilities
+
+`sx` also exports some utility functions that can be useful.
+
+### SplitByCase
+
+Splits a string into words based on case changes and separators.
+
+```go
+sx.SplitByCase("helloWorld") // ["hello", "World"]
+```
+
+### UpperFirst
+
+Capitalizes the first character of a string.
+
+```go
+sx.UpperFirst("hello") // Hello
+```
+
+### LowerFirst
+
+Lowercases the first character of a string.
+
+```go
+sx.LowerFirst("Hello") // hello
+```

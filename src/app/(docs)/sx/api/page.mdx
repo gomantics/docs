@@ -1,0 +1,167 @@
+export const metadata = {
+  title: "API Reference",
+  description: "Detailed API reference for the sx library.",
+};
+
+# API Reference
+
+## Case Functions
+
+### `CamelCase`
+
+```go
+func CamelCase[T StringOrStringSlice](input T, opts ...CaseOption) string
+```
+
+Converts the input string or slice of strings to camelCase.
+
+**Parameters:**
+
+- `input`: The string or slice of strings to convert.
+- `opts`: Optional configuration options (e.g., `WithNormalize`).
+
+**Returns:**
+
+- `string`: The converted string.
+
+---
+
+### `PascalCase`
+
+```go
+func PascalCase[T StringOrStringSlice](input T, opts ...CaseOption) string
+```
+
+Converts the input string or slice of strings to PascalCase.
+
+**Parameters:**
+
+- `input`: The string or slice of strings to convert.
+- `opts`: Optional configuration options.
+
+**Returns:**
+
+- `string`: The converted string.
+
+---
+
+### `KebabCase`
+
+```go
+func KebabCase[T StringOrStringSlice](input T, separator ...string) string
+```
+
+Converts the input string or slice of strings to kebab-case.
+
+**Parameters:**
+
+- `input`: The string or slice of strings to convert.
+- `separator`: Optional custom separator string (defaults to "-").
+
+**Returns:**
+
+- `string`: The converted string.
+
+---
+
+### `SnakeCase`
+
+```go
+func SnakeCase[T StringOrStringSlice](input T) string
+```
+
+Converts the input string or slice of strings to snake_case.
+
+**Returns:**
+
+- `string`: The converted string.
+
+---
+
+### `TrainCase`
+
+```go
+func TrainCase[T StringOrStringSlice](input T, opts ...CaseOption) string
+```
+
+Converts the input string or slice of strings to Train-Case.
+
+**Parameters:**
+
+- `input`: The string or slice of strings to convert.
+- `opts`: Optional configuration options.
+
+**Returns:**
+
+- `string`: The converted string.
+
+---
+
+### `FlatCase`
+
+```go
+func FlatCase[T StringOrStringSlice](input T) string
+```
+
+Converts the input string or slice of strings to flatcase (no separators).
+
+**Returns:**
+
+- `string`: The converted string.
+
+## Utility Functions
+
+### `SplitByCase`
+
+```go
+func SplitByCase(s string, opts ...SplitOption) []string
+```
+
+Splits a string into words based on case changes and separators.
+
+**Parameters:**
+
+- `s`: The string to split.
+- `opts`: Optional configuration options (e.g., `WithSeparators`).
+
+**Returns:**
+
+- `[]string`: A slice of words.
+
+---
+
+### `UpperFirst`
+
+```go
+func UpperFirst(s string) string
+```
+
+Capitalizes the first character of the string.
+
+---
+
+### `LowerFirst`
+
+```go
+func LowerFirst(s string) string
+```
+
+Lowercases the first character of the string.
+
+## Options
+
+### `WithNormalize`
+
+```go
+func WithNormalize(normalize bool) CaseOption
+```
+
+Sets whether to normalize the case (e.g., strict PascalCase). If `true`, `XMLRequest` becomes `XmlRequest`.
+
+### `WithSeparators`
+
+```go
+func WithSeparators(separators ...rune) SplitOption
+```
+
+Sets custom separator runes for `SplitByCase`.
