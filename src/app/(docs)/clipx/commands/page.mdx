@@ -1,0 +1,88 @@
+export const metadata = {
+  title: "Commands",
+  description: "Complete reference for all clipx commands.",
+};
+
+# Commands
+
+## `clipx`
+
+Start the daemon in the foreground. Useful for debugging — you'll see all sync events in real time.
+
+```bash
+clipx
+```
+
+## `clipx pair <ip>`
+
+Add a peer to sync with. You need to run this on both machines pointing at each other.
+
+```bash
+clipx pair 192.168.0.6
+```
+
+## `clipx unpair <ip>`
+
+Remove a peer.
+
+```bash
+clipx unpair 192.168.0.6
+```
+
+## `clipx peers`
+
+List all paired peers and their current status.
+
+```bash
+clipx peers
+# peers (2):
+#   ● online  192.168.0.5
+#   ○ offline 192.168.0.6
+```
+
+## `clipx install`
+
+Install clipx as a LaunchAgent and add a firewall exception. This makes clipx start automatically at login.
+
+```bash
+clipx install
+```
+
+May ask for your sudo password to configure the firewall.
+
+## `clipx uninstall`
+
+Remove the LaunchAgent. clipx will no longer start at login.
+
+```bash
+clipx uninstall
+```
+
+## `clipx status`
+
+Show whether the daemon is running, config path, peers, and recent log entries.
+
+```bash
+clipx status
+```
+
+## `clipx update`
+
+Self-update to the latest release via `go install`, then restart the LaunchAgent if installed.
+
+```bash
+clipx update
+```
+
+<Note>
+  If you installed via Homebrew, use `brew upgrade clipx` instead.
+</Note>
+
+## `clipx version`
+
+Print the current version.
+
+```bash
+clipx version
+# clipx v0.6.0
+```

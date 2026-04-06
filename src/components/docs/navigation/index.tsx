@@ -239,7 +239,7 @@ export function Navigation({
   ...props
 }: React.ComponentPropsWithoutRef<"nav"> & { navigation: Array<NavGroup> }) {
   const pathname = usePathname();
-  const library = ["sx", "chunkx", "cfgx", "semantix"].find((lib) =>
+  const library = ["sx", "chunkx", "cfgx", "semantix", "clipx"].find((lib) =>
     pathname.startsWith(`/${lib}`)
   );
 

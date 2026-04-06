@@ -1,0 +1,48 @@
+import { HeroPattern } from "@/components/hero-pattern";
+
+export const metadata = {
+  description:
+    "LAN clipboard sync for macOS. Copy on one Mac, paste on another. No cloud, no account, no Apple ID.",
+};
+
+<HeroPattern />
+
+# clipx
+
+LAN clipboard sync for macOS. Copy on one Mac, paste on another. Instantly.
+
+No cloud. No account. No Apple ID. No flaky Universal Clipboard.
+
+<div className="not-prose mb-16 mt-6 flex gap-3">
+  <Button href="/clipx/setup" arrow="right" children="Get started" />
+  <Button href="/clipx/commands" variant="outline" children="Commands" />
+</div>
+
+## Why clipx?
+
+Apple's Universal Clipboard is unreliable. It needs the same Apple ID, Bluetooth, Wi-Fi, and Handoff all working together — and it regularly just doesn't.
+
+clipx replaces all of that with a single UDP connection between your Macs. Pair them once, install, done.
+
+## How it works
+
+Each Mac runs `clipx` as a background daemon. When you copy something, clipx sends the clipboard content directly to all paired peers via UDP unicast on port 9877. When it receives content from a peer, it writes it to your local clipboard.
+
+- **UDP unicast** — no multicast, no firewall headaches
+- **Explicit pairing** — `clipx pair <ip>`, no auto-discovery
+- **SHA-256 dedup** — prevents clipboard ping-pong loops
+- **Chunked transfer** — large content split into UDP-safe packets, up to 10 MB
+
+## Install
+
+```bash
+brew install gomantics/tap/clipx
+```
+
+Or with Go:
+
+```bash
+go install github.com/gomantics/clipx/cmd/clipx@latest
+```
+
+Pre-built binaries for macOS (Intel & Apple Silicon) are on the [releases page](https://github.com/gomantics/clipx/releases/latest).

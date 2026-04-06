@@ -36,6 +36,13 @@ const libraryPatterns: Array<{
     y: 22,
     squares: [[0, 1]],
   },
+  {
+    y: 10,
+    squares: [
+      [0, 2],
+      [1, 1],
+    ],
+  },
 ];
 
 export default function Home() {

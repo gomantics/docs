@@ -69,4 +69,21 @@ export const semantixNavigation: Array<NavGroup> = [
   },
 ];
 
+export const clipxNavigation: Array<NavGroup> = [
+  {
+    title: "Getting Started",
+    links: [
+      { title: "Introduction", href: "/clipx" },
+      { title: "Setup", href: "/clipx/setup" },
+    ],
+  },
+  {
+    title: "Reference",
+    links: [
+      { title: "Commands", href: "/clipx/commands" },
+      { title: "How it Works", href: "/clipx/internals" },
+    ],
+  },
+];
+
 export const defaultNavigation: Array<NavGroup> = [];
