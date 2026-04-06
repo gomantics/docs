@@ -1,0 +1,80 @@
+export const metadata = {
+  title: "Setup",
+  description: "Get clipx running on your Macs in under a minute.",
+};
+
+# Setup
+
+Get clipx running on your Macs in under a minute.
+
+## 1. Install on both Macs
+
+```bash
+brew install gomantics/tap/clipx
+```
+
+## 2. Pair them
+
+On **Mac A** (e.g. 192.168.0.5):
+
+```bash
+clipx pair 192.168.0.6    # IP of Mac B
+```
+
+On **Mac B** (e.g. 192.168.0.6):
+
+```bash
+clipx pair 192.168.0.5    # IP of Mac A
+```
+
+<Note>
+  Find your Mac's IP with `ifconfig en0 | grep inet`.
+</Note>
+
+## 3. Install and run
+
+On **both Macs**:
+
+```bash
+clipx install
+```
+
+This does three things:
+- Adds a firewall exception so UDP can get through (may ask for sudo)
+- Creates a LaunchAgent that starts clipx at login
+- Starts clipx immediately
+
+**Done.** Copy on one Mac, paste on the other.
+
+## Disable Universal Clipboard
+
+Apple's Universal Clipboard will fight with clipx. Turn it off:
+
+**System Settings → General → AirDrop & Handoff → Handoff → Off**
+
+## Adding more Macs
+
+Pair each new Mac with every existing one:
+
+```bash
+# On the new Mac:
+clipx pair 192.168.0.5
+clipx pair 192.168.0.6
+clipx install
+
+# On each existing Mac:
+clipx pair 192.168.0.7    # IP of new Mac
+clipx uninstall && clipx install
+```
+
+## Configuration
+
+Peers live in `~/.config/clipx/config.json`:
+
+```json
+{
+  "peers": ["192.168.0.5", "192.168.0.6"]
+}
+```
+
+You can edit this file directly if you prefer.

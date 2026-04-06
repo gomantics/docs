@@ -15,6 +15,7 @@ import {
 import {
   cfgxNavigation,
   chunkxNavigation,
+  clipxNavigation,
   defaultNavigation,
   semantixNavigation,
   sxNavigation,
@@ -25,6 +26,7 @@ const navigationMap: Record<string, typeof defaultNavigation> = {
   chunkx: chunkxNavigation,
   cfgx: cfgxNavigation,
   semantix: semantixNavigation,
+  clipx: clipxNavigation,
 };
 
 export function Layout({

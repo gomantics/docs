@@ -1,0 +1,60 @@
+export const metadata = {
+  title: "How it Works",
+  description: "Protocol design, loop prevention, and chunked transfer in clipx.",
+};
+
+# How it Works
+
+clipx is ~500 lines of Go. Here's what's happening under the hood.
+
+## Protocol
+
+All communication is UDP unicast on port **9877**. Four message types:
+
+| Type | Byte | Purpose |
+|---|---|---|
+| Clipboard | `C` | Clipboard content (single packet) |
+| Chunk | `K` | One chunk of large content |
+| Ping | `P` | Health check |
+| Pong | `A` | Health check response |
+
+### Wire format
+
+```
+[6B magic "CLIPX2"] [1B type] [8B nodeID] [payload]
+```
+
+**Clipboard payload:** `[64B SHA-256 hex hash] [data]`
+
+**Chunk payload:** `[64B SHA-256 hex hash] [2B index] [2B total] [data]`
+
+## Loop prevention
+
+Without dedup, two nodes would bounce clipboard content back and forth forever. clipx prevents this with SHA-256 hashing:
+
+1. Every clipboard write is hashed
+2. When content arrives from a peer, its hash is recorded
+3. When the local clipboard watcher detects a change, it checks if the hash matches a recently received peer hash — if so, it skips broadcasting
+
+Peer hashes are cleaned up after 60 seconds.
+
+## Chunked transfer
+
+UDP packets have size limits — especially over Wi-Fi where MTU is typically 1500 bytes. clipx chunks content larger than **1300 bytes** (conservative margin under any MTU) into multiple packets.
+
+Each chunk carries the SHA-256 hash of the full content, a chunk index, and total chunk count. The receiver reassembles chunks and verifies the hash before writing to the clipboard.
+
+Incomplete transfers are discarded after 30 seconds.
+
+## Reliability
+
+- Small payloads (≤1300 bytes) are sent **3 times** for UDP reliability
+- Persistent UDP connections to peers with automatic reconnection on failure
+- The clipboard is polled every 500ms for changes
+
+## Limits
+
+- **10 MB** maximum clipboard size
+- **Text only** — uses `pbcopy`/`pbpaste`
+- **macOS only**
+- Peers must be on the same LAN

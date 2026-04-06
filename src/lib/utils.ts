@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Binary, Settings, Type, Search } from "lucide-react";
+import { Binary, Settings, Type, Search, ClipboardCopy } from "lucide-react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -30,6 +30,12 @@ export const gomanticsLibraries = [
     path: "/semantix",
     description: "Semantic search with MCP superpowers",
     icon: Search,
+  },
+  {
+    name: "clipx",
+    path: "/clipx",
+    description: "LAN clipboard sync for macOS",
+    icon: ClipboardCopy,
   },
 ];
 
